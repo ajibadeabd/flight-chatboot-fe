@@ -3,19 +3,23 @@ import { flightData, bookFlight, getPaymentLink } from '../../api';
 import FilterComponent from '../../component/filter';
 import { useSearchParams } from 'react-router-dom';
  
-const actionButtons = [
-  { type: "submit", name: "Book", className: "px-4 py-2 bg-blue-500 text-white rounded" },
-  { type: "button", name: "Cancel", className: "ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded" }
-];
 
 function Flight() {
   const [flights, setFlights] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [limit, setLimit] = useState(20);
   const [selectedFlight, setSelectedFlight] = useState({});
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [timeFilter,  setTimeFilter] = useState('');
+  const [destinationCity, setDestinationCity] = useState("");
+  const [departureCity, setDepartureCity] = useState("");
+  const [date, setDate] = useState('');
+
+
+   
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -24,7 +28,11 @@ function Flight() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
+  const actionButtons = [
+    { type: "submit", name: "Book", className: "px-4 py-2 bg-blue-500 text-white rounded" },
+    { type: "button", name: "Cancel", className: "ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded", onClick:closeModal }
+  ];
+  
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
@@ -49,10 +57,9 @@ function Flight() {
     setName("");
     setEmail("");
 
-    const { data: { data: { booking_id } } } = await bookFlight(requestBody);
+    const { data: { booking_id }  } = await bookFlight(requestBody);
     let { data } = await getPaymentLink(booking_id);
-    let paymentLink = data.data;
-    console.log(paymentLink);
+    let paymentLink = data;
 
     const popupWindow = window.open(
       paymentLink + "?callback_url=http://localhost:3000/flight",
@@ -68,21 +75,33 @@ function Flight() {
   };
 
   useEffect(() => {
-    flightData().then((res) => {
-      setFlights(res?.data.data);
+    flightData({
+      limit,
+      departureCity,
+      destinationCity,
+      date
+    }).then((res) => {
+
+      setFlights(res?.data);
     });
-  }, []);
+  }, [ departureCity,destinationCity,limit ,date]);
 
   useEffect(() => {
-    const queryObject = Object.fromEntries(searchParams.entries());
-    console.log(queryObject);
-    // self.close();
+    // eslint-disable-next-line no-restricted-globals
+    self.close();
   }, [searchParams]);
 
   return (
     <div className="min-h-screen pt-10 bg-gray-100 flex flex-col justify-center items-center">
-      <FilterComponent />
-
+      <FilterComponent 
+       setTimeFilter={setTimeFilter}
+        destinationCity={destinationCity}
+        setDestinationCity={setDestinationCity}
+        setDepartureCity={setDepartureCity}
+        departureCity={departureCity}
+        date={date}
+        setDate={setDate}
+      />
       <div className="w-full md:w-2/3 lg:w-1/2 p-4 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-semibold mb-4">Flight Information</h1>
         <table className="w-full border-collapse">

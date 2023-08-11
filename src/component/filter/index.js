@@ -1,49 +1,60 @@
 import React, { useState } from 'react';
 
-const Filter = () => {
-  const [destinationTimeFilter, setDestinationTimeFilter] = useState('');
-  const [flightIdFilter, setFlightIdFilter] = useState('');
+const Filter = ({
+  destinationCity,
+  setDestinationCity,
+  setDepartureCity,
+  departureCity,
+  date,
+  setDate 
+}) => {
+  const handleFilterClick = () => {
+    // Apply filters based on destinationCity, departureCity, startDate, and endDate
+  };
 
   return (
-    //space-y-4
-    <div className="flex flex-row  py-4 w-1/2 px-9 bg-red-100">
-      <div className="flex flex-col space-y-1 w-5/12 mx-5 ">
+    <div className="flex flex-row py-4 w-1/2 px-9 bg-red-100">
+      <div className="flex flex-col space-y-1 w-5/12 mx-5">
         <label htmlFor="destinationTimeFilter" className="text-sm font-medium">
-          Filter by Destination Time
+          Filter by destination city
         </label>
         <input
           type="text"
-          id="destinationTimeFilter"
-          placeholder="Enter destination time..."
-          value={destinationTimeFilter}
-          onChange={e => setDestinationTimeFilter(e.target.value)}
+          id="destinationCity"
+          placeholder="Enter destination city..."
+          value={destinationCity}
+          onChange={(e) => setDestinationCity(e.target.value)}
           className="border p-2 rounded"
         />
       </div>
 
-
-      <div className="flex flex-col space-y-1 w-1/2 mx-5 ">
+      <div className="flex flex-col space-y-1 w-1/2 mx-5">
         <label htmlFor="flightIdFilter" className="text-sm font-medium">
-          Filter by Flight ID
+          Filter by departure city
         </label>
         <input
           type="text"
-          id="flightIdFilter"
-          placeholder="Enter flight ID..."
-          value={flightIdFilter}
-          onChange={e => setFlightIdFilter(e.target.value)}
+          id="departureCity"
+          placeholder="Enter departureCity..."
+          value={departureCity}
+          onChange={(e) => setDepartureCity(e.target.value)}
           className="border p-2 rounded"
         />
       </div>
 
-      <button
-        onClick={() => {
-          // Apply filters
-        }}
-        className="bg-blue-500 text-white p-0.5 rounded"
-      >
-        Apply Filter
-      </button>
+      <div className="flex flex-col space-y-1 w-1/2 mx-5">
+        <label htmlFor="startDate" className="text-sm font-medium">
+        Filter by  Date
+        </label>
+        <input
+          type="date"
+          id="startDate"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="border p-2 rounded"
+        />
+      </div>
+  
     </div>
   );
 };
